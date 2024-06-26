@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Repositório</title>
+    <link rel="stylesheet" href="./assets/css/repo.css">
+</head>
+
+<body>
+    <div class="card">
+        <img src="https://pngimg.com/uploads/github/github_PNG51.png" alt="Imagem do Repositório" width="150" height="150">
+        <h1 id="repo-name">Nome do Repositório</h1>
+        <p id="repo-id"><strong>ID:</strong> 123456</p>
+        <p id="repo-description">Descrição do repositório</p>
+        <p><strong>URL:</strong> <a id="repo-url" href="#" target="_blank">Link do Repositório</a></p>
+        <p id="repo-created-at"><strong>Data Criação:</strong> 01/01/2021</p>
+    </div>
+
+    <script>
+
+const urlParams = new URLSearchParams(window.location.search);
+        const repoId = urlParams.get('id');
+
+        function getRepoDetails() {
+            fetch(`https://api.github.com/repositories/${repoId}`)
+                .then(async res => {
+                    if (!res.ok) {
+                        throw new Error(res.status);
+                    }
+
+                    var data = await res.json();
+
+                    document.getElementById('repo-name').innerText = data.name.toUpperCase();
+                    document.getElementById('repo-id').innerHTML = `<strong>ID:</strong> ${data.id}`;
+                    document.getElementById('repo-description').innerText = data.description ? data.description : 'Sem descrição disponível';
+                    document.getElementById('repo-url').href = data.html_url;
+                    document.getElementById('repo-url').innerText = data.html_url;
+                    document.getElementById('repo-created-at').innerHTML = `<strong>Data Criação:</strong> ${Intl.DateTimeFormat('pt-BR').format(new Date(data.created_at))}`;
+
+                }).catch(e => console.log(e));
+        }
+
+        getRepoDetails();
+
+    </script>
+
+</body>
